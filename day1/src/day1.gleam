@@ -10,19 +10,25 @@ import utils
 pub fn main() {
   case argv.load().arguments {
     ["part1"] -> part1() |> io.debug |> utils.void
+    ["part2"] -> part2() |> io.debug |> utils.void
     _ -> io.println("Please provide a part to run: part1")
   }
 }
 
 fn part1() {
-  utils.read_input("./src/input.txt")
-  |> result.unwrap("")
-  |> string.trim
+  utils.read_input("input.txt")
   |> utils.iterate_lines
   |> get_columns
   |> sort_columns
   |> calculate_column_distances
   |> utils.sum_int_list
+}
+
+fn part2() {
+  utils.read_input("input.txt")
+  |> utils.iterate_lines
+  |> get_columns
+  |> get_similarity_score
 }
 
 pub type Columns {
@@ -68,4 +74,11 @@ fn calculate_column_distances(columns: Columns) -> List(Int) {
     }
     _ -> columns.result
   }
+}
+
+fn get_similarity_score(columns: Columns) -> Int {
+  columns.column_a
+  |> list.fold(0, fn(total, a_value) {
+    total + a_value * list.count(columns.column_b, fn(b) { b == a_value })
+  })
 }
