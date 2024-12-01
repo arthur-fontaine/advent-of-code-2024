@@ -1,3 +1,4 @@
+import argv
 import gleam/int
 import gleam/io
 import gleam/list
@@ -7,6 +8,17 @@ import gleam/yielder
 import simplifile
 
 pub fn main() {
+  case argv.load().arguments {
+    ["part1"] -> part1() |> io.debug |> void
+    _ -> io.println("Please provide a part to run: part1")
+  }
+}
+
+fn void(_) {
+  Nil
+}
+
+fn part1() {
   read_input("./src/input.txt")
   |> result.unwrap("")
   |> string.trim
@@ -15,7 +27,6 @@ pub fn main() {
   |> sort_columns
   |> calculate_column_distances
   |> sum_int_list
-  |> io.debug
 }
 
 fn read_input(path) {
