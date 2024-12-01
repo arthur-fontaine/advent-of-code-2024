@@ -5,37 +5,24 @@ import gleam/list
 import gleam/result
 import gleam/string
 import gleam/yielder
-import simplifile
+import utils
 
 pub fn main() {
   case argv.load().arguments {
-    ["part1"] -> part1() |> io.debug |> void
+    ["part1"] -> part1() |> io.debug |> utils.void
     _ -> io.println("Please provide a part to run: part1")
   }
 }
 
-fn void(_) {
-  Nil
-}
-
 fn part1() {
-  read_input("./src/input.txt")
+  utils.read_input("./src/input.txt")
   |> result.unwrap("")
   |> string.trim
-  |> iterate_lines
+  |> utils.iterate_lines
   |> get_columns
   |> sort_columns
   |> calculate_column_distances
-  |> sum_int_list
-}
-
-fn read_input(path) {
-  simplifile.read(path)
-}
-
-fn iterate_lines(input) {
-  string.split(input, "\n")
-  |> yielder.from_list
+  |> utils.sum_int_list
 }
 
 pub type Columns {
@@ -81,9 +68,4 @@ fn calculate_column_distances(columns: Columns) -> List(Int) {
     }
     _ -> columns.result
   }
-}
-
-fn sum_int_list(l) {
-  l
-  |> list.fold(0, fn(a, b) { a + b })
 }
