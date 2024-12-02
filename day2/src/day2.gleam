@@ -42,42 +42,13 @@ fn parse_lines(lines) {
 }
 
 fn is_line_safe(line) {
-  let diffs = get_line_diffs(line, [])
-  is_all_line_diffs_ok(diffs) && is_all_line_same_direction(diffs)
-}
+  let windows = line |> list.window_by_2
 
-fn is_all_line_diffs_ok(diffs) {
-  use x <- list.all(diffs)
-  int.absolute_value(x) <= 3 && int.absolute_value(x) >= 1
-}
-
-fn is_all_line_same_direction(diffs) {
-  list.all(diffs, fn(x) { x > 0 }) || list.all(diffs, fn(x) { x < 0 })
-}
-
-fn get_line_diffs(line, result) {
-  case line {
-    [first, second, ..rest] -> {
-      let diff = second - first
-      get_line_diffs([second, ..rest], [diff, ..result])
-    }
-    _ -> result
-  }
+  list.all(windows, fn(w) { w.0 - w.1 >= 1 && w.0 - w.1 <= 3 })
+  || list.all(windows, fn(w) { w.1 - w.0 >= 1 && w.1 - w.0 <= 3 })
 }
 
 fn is_line_safe_with_tolerance(line) {
-  get_line_possibilities(line)
+  list.combinations(line, list.length(line) - 1)
   |> list.any(is_line_safe)
-}
-
-fn get_line_possibilities(line) {
-  use _, i <- list.index_map(line)
-
-  line
-  |> list.index_fold([], fn(r, x, j) {
-    case j == i {
-      True -> r
-      False -> [x, ..list.reverse(r)] |> list.reverse
-    }
-  })
 }
