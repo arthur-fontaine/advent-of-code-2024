@@ -15,14 +15,18 @@ pub fn main() {
 }
 
 fn part1() {
-  utils.read_input("input.txt")
+  use input <- result.map(utils.read_input("input.txt"))
+
+  input
   |> string.split("\n")
   |> parse_lines
   |> list.count(is_line_safe)
 }
 
 fn part2() {
-  utils.read_input("input.txt")
+  use input <- result.map(utils.read_input("input.txt"))
+
+  input
   |> string.split("\n")
   |> parse_lines
   |> list.count(is_line_safe_with_tolerance)
@@ -38,17 +42,16 @@ fn parse_lines(lines) {
 }
 
 fn is_line_safe(line) {
-  is_all_line_diffs_ok(line) && is_all_line_same_direction(line)
+  let diffs = get_line_diffs(line, [])
+  is_all_line_diffs_ok(diffs) && is_all_line_same_direction(diffs)
 }
 
-fn is_all_line_diffs_ok(line) {
-  let diffs = get_line_diffs(line, [])
+fn is_all_line_diffs_ok(diffs) {
   use x <- list.all(diffs)
   int.absolute_value(x) <= 3 && int.absolute_value(x) >= 1
 }
 
-fn is_all_line_same_direction(line) {
-  let diffs = get_line_diffs(line, [])
+fn is_all_line_same_direction(diffs) {
   list.all(diffs, fn(x) { x > 0 }) || list.all(diffs, fn(x) { x < 0 })
 }
 
@@ -63,8 +66,8 @@ fn get_line_diffs(line, result) {
 }
 
 fn is_line_safe_with_tolerance(line) {
-  let possibilities = get_line_possibilities(line)
-  list.any(possibilities, is_line_safe)
+  get_line_possibilities(line)
+  |> list.any(is_line_safe)
 }
 
 fn get_line_possibilities(line) {

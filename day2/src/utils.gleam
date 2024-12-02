@@ -3,8 +3,9 @@ import gleam/string
 import simplifile
 
 pub fn read_input(path) {
-  simplifile.read(path)
-  |> result.unwrap("")
+  use file <- result.map(simplifile.read(path))
+
+  file
   |> string.trim
 }
 
