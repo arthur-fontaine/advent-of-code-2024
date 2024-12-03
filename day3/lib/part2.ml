@@ -19,3 +19,8 @@ let treat_instrs instrs =
       | "don't()" -> do_ref := false; 0
       | _ -> if !do_ref then treat_mul_instr instr else 0)
   |> List.fold_left (+) 0
+
+let run input =
+  input
+  |> get_instrs
+  |> treat_instrs

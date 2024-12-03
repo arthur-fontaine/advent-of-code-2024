@@ -10,3 +10,8 @@ let get_muls input =
 let apply_muls muls =
   muls
   |> List.fold_left (fun acc (x, y) -> acc + (x * y)) 0
+
+let run input =
+  input
+  |> get_muls
+  |> apply_muls
