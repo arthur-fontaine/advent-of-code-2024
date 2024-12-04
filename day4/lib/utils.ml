@@ -22,6 +22,11 @@ let string_contains_word word s =
   try ignore (Str.search_forward re s 0); true
   with Not_found -> false
 
+let remove_chars erase s =
+  let b = Buffer.create 10 in
+  String.iter (fun c -> if not (List.mem c erase) then Buffer.add_char b c) s;
+  Buffer.contents b
+
 let count_occurrences w s =
   let rec count' i n =
     try
