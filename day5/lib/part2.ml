@@ -16,14 +16,33 @@ let check_update (update: Input.update) (rules: Input.rule list) =
   ) rules;
   !res
 
-let check_updates (updates: Input.update list) (rules: Input.rule list) =
-  List.filter (fun update -> check_update update rules) updates
+let is_update_before (rules: Input.rule list) (a: int) (b: int) =
+  let res = ref false in
+  List.iter (fun (before, after) ->
+    if before == a && after == b then
+      res := true
+  ) rules;
+  !res
+
+let correctly_sort_update  (update: Input.update) (rules: Input.rule list) =
+  List.sort (fun a b ->
+    if is_update_before rules a b then
+      -1
+    else if is_update_before rules b a then
+      1
+    else
+      0
+  ) update
+
+let get_uncorrect_updates (updates: Input.update list) (rules: Input.rule list) =
+  List.filter (fun update -> not (check_update update rules)) updates
 
 let get_middle_of_update (update: Input.update) =
   List.nth update (List.length update / 2)
 
 let run input =
   let (rules, updates) = Input.parse_input input in
-  check_updates updates rules
+  get_uncorrect_updates updates rules
+  |> List.map (fun update -> correctly_sort_update update rules)
   |> List.map get_middle_of_update
   |> List.fold_left (fun acc x -> acc + x) 0
