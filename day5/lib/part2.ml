@@ -18,10 +18,10 @@ let check_update (update: Input.update) (rules: Input.rule list) =
 
 let is_update_before (rules: Input.rule list) (a: int) (b: int) =
   let res = ref false in
-  List.iter (fun (before, after) ->
+  rules |> List.iter (fun (before, after) ->
     if before == a && after == b then
       res := true
-  ) rules;
+  );
   !res
 
 let correctly_sort_update  (update: Input.update) (rules: Input.rule list) =
