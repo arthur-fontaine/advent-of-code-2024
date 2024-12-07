@@ -5,7 +5,8 @@ module Day7
   input = parse_input _input
 
   result = input.reduce(0) do |acc, test_case|
-    working = generate_operators(test_case[1]).find do |operators|
+    ops = generate_operators(test_case[1])
+    working = ops.find do |operators|
       run_operations(test_case[1], operators) == test_case[0]
     end
     if working.nil?
@@ -17,7 +18,7 @@ module Day7
   puts result
 end
 
-def read_input() : String
+def read_input : String
   File.read("input.txt").strip
 end
 
@@ -49,13 +50,19 @@ def generate_operators(n : Array(Int32))
   result
 end
 
-def _generate_operators(curr_operators, min_i_replacement, result) Array(Array(Char))
+def _generate_operators(curr_operators, min_i_replacement, result)
+  Array(Array(Char))
   if min_i_replacement < curr_operators.size
     (min_i_replacement..(curr_operators.size - 1)).flat_map do |i|
-      new_operators = curr_operators.dup
-      new_operators[i] = '*'
-      result << new_operators
-      _generate_operators(new_operators, i + 1, result)
+      new_operators_times = curr_operators.dup
+      new_operators_times[i] = '*'
+      result << new_operators_times
+      _generate_operators(new_operators_times, i + 1, result)
+
+      new_operators_concat = curr_operators.dup
+      new_operators_concat[i] = '|'
+      result << new_operators_concat
+      _generate_operators(new_operators_concat, i + 1, result)
     end
   end
 end
@@ -77,7 +84,11 @@ def run_operations(n : Array(Int32), operators : Array(Char))
     if operator == '+'
       result += number
     else
-      result *= number
+      if operator == '*'
+        result *= number
+      else
+        result = "#{result}#{number}".to_big_i
+      end
     end
   end
   result
