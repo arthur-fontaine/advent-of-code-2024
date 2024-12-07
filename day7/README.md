@@ -1,27 +1,8 @@
-# day7
+To run this solution, run the following command:
 
-TODO: Write a description here
+```bash
+crystal src/day7.cr part<PART_NUMBER>
+```
 
-## Installation
-
-TODO: Write installation instructions here
-
-## Usage
-
-TODO: Write usage instructions here
-
-## Development
-
-TODO: Write development instructions here
-
-## Contributing
-
-1. Fork it (<https://github.com/your-github-user/day7/fork>)
-2. Create your feature branch (`git checkout -b my-new-feature`)
-3. Commit your changes (`git commit -am 'Add some feature'`)
-4. Push to the branch (`git push origin my-new-feature`)
-5. Create a new Pull Request
-
-## Contributors
-
-- [Arthur Fontaine](https://github.com/your-github-user) - creator and maintainer
+> [!NOTE]
+> `part2` will take a while to run (30sec on a M1 Pro)

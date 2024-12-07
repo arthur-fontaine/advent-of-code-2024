@@ -5,8 +5,7 @@ module Day7
   input = parse_input _input
 
   result = input.reduce(0) do |acc, test_case|
-    ops = generate_operators(test_case[1])
-    working = ops.find do |operators|
+    working = generate_operators(test_case[1], ARGV[0] == "part2").find do |operators|
       run_operations(test_case[1], operators) == test_case[0]
     end
     if working.nil?
@@ -37,7 +36,7 @@ def parse_line(line : String)
   {test_value, ns}
 end
 
-def generate_operators(n : Array(Int32))
+def generate_operators(n : Array(Int32), with_concat = false)
   max = n.size - 1
 
   operators = [] of Char
@@ -46,23 +45,27 @@ def generate_operators(n : Array(Int32))
   end
 
   result = [operators]
-  _generate_operators(operators, 0, result)
+  _generate_operators(operators, 0, result, with_concat)
   result
 end
 
-def _generate_operators(curr_operators, min_i_replacement, result)
+def _generate_operators(curr_operators, min_i_replacement, result, with_concat)
   Array(Array(Char))
   if min_i_replacement < curr_operators.size
     (min_i_replacement..(curr_operators.size - 1)).flat_map do |i|
       new_operators_times = curr_operators.dup
       new_operators_times[i] = '*'
       result << new_operators_times
-      _generate_operators(new_operators_times, i + 1, result)
+      _generate_operators(new_operators_times, i + 1, result, with_concat)
+
+      if !with_concat
+        next
+      end
 
       new_operators_concat = curr_operators.dup
       new_operators_concat[i] = '|'
       result << new_operators_concat
-      _generate_operators(new_operators_concat, i + 1, result)
+      _generate_operators(new_operators_concat, i + 1, result, with_concat)
     end
   end
 end
