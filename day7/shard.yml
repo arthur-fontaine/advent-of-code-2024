@@ -1,0 +1,13 @@
+name: day7
+version: 0.1.0
+
+authors:
+  - Arthur Fontaine <0arthur.fontaine@gmail.com>
+
+targets:
+  day7:
+    main: src/day7.cr
+
+crystal: '>= 1.14.0'
+
+license: MIT
