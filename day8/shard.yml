@@ -1,0 +1,13 @@
+name: day8
+version: 0.1.0
+
+authors:
+  - Arthur Fontaine <0arthur.fontaine@gmail.com>
+
+targets:
+  day8:
+    main: src/day8.cr
+
+crystal: '>= 1.14.0'
+
+license: MIT
