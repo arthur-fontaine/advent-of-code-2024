@@ -6,7 +6,7 @@ module Day8
   antenna_types.each do |antenna_type|
     antenna_combinations = get_antenna_combinations(_input, antenna_type)
     antenna_combinations.each do |antenna_combination|
-      get_antinode_positions_from_pair_of_antenna(_input, antenna_combination).each { |antinode_position| result << antinode_position }
+      get_antinode_positions_from_pair_of_antenna(_input, antenna_combination, ARGV[0] == "part2").each { |antinode_position| result << antinode_position }
     end
   end
 
@@ -37,7 +37,7 @@ def get_all_indexes(input : String, char : Char) : Array(Int32)
   r
 end
 
-def get_antinode_positions_from_pair_of_antenna(input : String, antenna_indexes : {Int32, Int32}) : Array({Int32, Int32})
+def get_antinode_positions_from_pair_of_antenna(input : String, antenna_indexes : {Int32, Int32}, resonant : Bool) : Array({Int32, Int32})
   row_size = input.index('\n').not_nil!
   number_of_rows = input.size // row_size
 
@@ -47,17 +47,29 @@ def get_antinode_positions_from_pair_of_antenna(input : String, antenna_indexes 
   antinode1_position = {antenna1_position[0] - (antenna2_position[0] - antenna1_position[0]), antenna1_position[1] - (antenna2_position[1] - antenna1_position[1])}
   antinode2_position = {antenna2_position[0] - (antenna1_position[0] - antenna2_position[0]), antenna2_position[1] - (antenna1_position[1] - antenna2_position[1])}
 
-  r = [get_antenna_position(input, antenna_indexes[0]), get_antenna_position(input, antenna_indexes[1])]
-  while antinode1_position[0] >= 0 && antinode1_position[0] < number_of_rows && antinode1_position[1] >= 0 && antinode1_position[1] < row_size
-    r << antinode1_position
-    antinode1_position = {antinode1_position[0] - (antenna2_position[0] - antenna1_position[0]), antinode1_position[1] - (antenna2_position[1] - antenna1_position[1])}
-  end
-  while antinode2_position[0] >= 0 && antinode2_position[0] < number_of_rows && antinode2_position[1] >= 0 && antinode2_position[1] < row_size
-    r << antinode2_position
-    antinode2_position = {antinode2_position[0] - (antenna1_position[0] - antenna2_position[0]), antinode2_position[1] - (antenna1_position[1] - antenna2_position[1])}
-  end
+  if resonant
+    r = [get_antenna_position(input, antenna_indexes[0]), get_antenna_position(input, antenna_indexes[1])]
+    while antinode1_position[0] >= 0 && antinode1_position[0] < number_of_rows && antinode1_position[1] >= 0 && antinode1_position[1] < row_size
+      r << antinode1_position
+      antinode1_position = {antinode1_position[0] - (antenna2_position[0] - antenna1_position[0]), antinode1_position[1] - (antenna2_position[1] - antenna1_position[1])}
+    end
+    while antinode2_position[0] >= 0 && antinode2_position[0] < number_of_rows && antinode2_position[1] >= 0 && antinode2_position[1] < row_size
+      r << antinode2_position
+      antinode2_position = {antinode2_position[0] - (antenna1_position[0] - antenna2_position[0]), antinode2_position[1] - (antenna1_position[1] - antenna2_position[1])}
+    end
 
-  r
+    r
+  else
+    r = [] of {Int32, Int32}
+    if antinode1_position[0] >= 0 && antinode1_position[0] < number_of_rows && antinode1_position[1] >= 0 && antinode1_position[1] < row_size
+      r << antinode1_position
+    end
+    if antinode2_position[0] >= 0 && antinode2_position[0] < number_of_rows && antinode2_position[1] >= 0 && antinode2_position[1] < row_size
+      r << antinode2_position
+    end
+
+    r
+  end
 end
 
 def get_antenna_position(input : String, index : Int32)
