@@ -1,12 +1,6 @@
-# TODO: Write documentation for `Day8`
 module Day8
   _input = read_input()
   antenna_types = get_antenna_types _input
-
-  # puts "Antenna types: #{antenna_types}"
-  # puts "Indexes of 'A': #{get_all_indexes(_input, 'A')}"
-  # puts "Combinations of 'A': #{get_antenna_combinations(_input, 'A')}"
-  # puts "Antinode indexes of 'A': #{get_antinode_from_pair_of_antenna_indexes(_input, get_antenna_combinations(_input, 'A')[0])}"
 
   result = [] of {Int32, Int32}
   antenna_types.each do |antenna_type|
@@ -53,12 +47,14 @@ def get_antinode_positions_from_pair_of_antenna(input : String, antenna_indexes 
   antinode1_position = {antenna1_position[0] - (antenna2_position[0] - antenna1_position[0]), antenna1_position[1] - (antenna2_position[1] - antenna1_position[1])}
   antinode2_position = {antenna2_position[0] - (antenna1_position[0] - antenna2_position[0]), antenna2_position[1] - (antenna1_position[1] - antenna2_position[1])}
 
-  r = [] of {Int32, Int32}
-  if antinode1_position[0] >= 0 && antinode1_position[0] < number_of_rows && antinode1_position[1] >= 0 && antinode1_position[1] < row_size
+  r = [get_antenna_position(input, antenna_indexes[0]), get_antenna_position(input, antenna_indexes[1])]
+  while antinode1_position[0] >= 0 && antinode1_position[0] < number_of_rows && antinode1_position[1] >= 0 && antinode1_position[1] < row_size
     r << antinode1_position
+    antinode1_position = {antinode1_position[0] - (antenna2_position[0] - antenna1_position[0]), antinode1_position[1] - (antenna2_position[1] - antenna1_position[1])}
   end
-  if antinode2_position[0] >= 0 && antinode2_position[0] < number_of_rows && antinode2_position[1] >= 0 && antinode2_position[1] < row_size
+  while antinode2_position[0] >= 0 && antinode2_position[0] < number_of_rows && antinode2_position[1] >= 0 && antinode2_position[1] < row_size
     r << antinode2_position
+    antinode2_position = {antinode2_position[0] - (antenna1_position[0] - antenna2_position[0]), antinode2_position[1] - (antenna1_position[1] - antenna2_position[1])}
   end
 
   r
