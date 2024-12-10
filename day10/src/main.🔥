@@ -1,12 +1,10 @@
-from collections import Set
-
 def main():
   input = get_input()
   map = to_2d(input)
   trailhead_indexes = get_trailhead_indexes(map)
   total_trails = 0
   for trailhead_index in trailhead_indexes:
-    total_trails += len(correct_trails_from_trailhead(map, trailhead_index[]))
+    total_trails += number_of_trails_from_trailhead(map, trailhead_index[])
   print(total_trails)
   
 
@@ -31,14 +29,14 @@ def get_trailhead_indexes(map: List[List[String]]) -> List[List[Int]]:
         trailhead_indexes.append(List[Int](i, j))
   return trailhead_indexes
 
-def correct_trails_from_trailhead(map: List[List[String]], index: List[Int]) -> Set[String]:
+def number_of_trails_from_trailhead(map: List[List[String]], index: List[Int]) -> Int:
   x, y = index[0], index[1]
   char = map[x][y]
 
   if char == '9':
-    return Set[String](x.__str__() + ', ' + y.__str__())
+    return 1
   
-  recursive_correct_trails = Set[String]()
+  recursive_sum = 0
   char_int = int(char)
   next_indexes = List[List[Int]](List[Int](x+1, y), List[Int](x-1, y), List[Int](x, y+1), List[Int](x, y-1))
   for next_index in next_indexes:
@@ -47,7 +45,6 @@ def correct_trails_from_trailhead(map: List[List[String]], index: List[Int]) -> 
       continue
     next_char = map[next_x][next_y]
     if next_char == str(char_int + 1):
-      for trail in correct_trails_from_trailhead(map, next_index[]):
-        recursive_correct_trails.add(trail[])
+      recursive_sum += number_of_trails_from_trailhead(map, next_index[])
   
-  return Set[String](recursive_correct_trails)
+  return recursive_sum
