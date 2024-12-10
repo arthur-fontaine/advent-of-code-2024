@@ -1,0 +1,53 @@
+from collections import Set
+
+def main():
+  input = get_input()
+  map = to_2d(input)
+  trailhead_indexes = get_trailhead_indexes(map)
+  total_trails = 0
+  for trailhead_index in trailhead_indexes:
+    total_trails += len(correct_trails_from_trailhead(map, trailhead_index[]))
+  print(total_trails)
+  
+
+def get_input() -> String:
+  with open('input.txt', 'r') as f:
+    return f.read()
+
+def to_2d(input: String) -> List[List[String]]:
+  r = List[List[String]]()
+  for row in input.split('\n'):
+    r2 = List[String]()
+    for char in row[]:
+      r2.append(char.__str__())
+    r.append(r2)
+  return r
+
+def get_trailhead_indexes(map: List[List[String]]) -> List[List[Int]]:
+  trailhead_indexes = List[List[Int]]()
+  for i in range(len(map)):
+    for j in range(len(map[i])):
+      if map[i][j] == '0':
+        trailhead_indexes.append(List[Int](i, j))
+  return trailhead_indexes
+
+def correct_trails_from_trailhead(map: List[List[String]], index: List[Int]) -> Set[String]:
+  x, y = index[0], index[1]
+  char = map[x][y]
+
+  if char == '9':
+    return Set[String](x.__str__() + ', ' + y.__str__())
+  
+  recursive_correct_trails = Set[String]()
+  char_int = int(char)
+  next_indexes = List[List[Int]](List[Int](x+1, y), List[Int](x-1, y), List[Int](x, y+1), List[Int](x, y-1))
+  for next_index in next_indexes:
+    next_x, next_y = next_index[][0], next_index[][1]
+    if next_x < 0 or next_x >= len(map) or next_y < 0 or next_y >= len(map[next_x]):
+      continue
+    next_char = map[next_x][next_y]
+    if next_char == str(char_int + 1):
+      for trail in correct_trails_from_trailhead(map, next_index[]):
+        recursive_correct_trails.add(trail[])
+  
+  return Set[String](recursive_correct_trails)
