@@ -12,16 +12,18 @@ func main() {
 	if err != nil {
 		panic(err)
 	}
+
 	stones, err := parseInput(input)
-	for i := 0; i < 25; i++ {
-		if newStones, err := blink(stones); err != nil {
-			panic(err)
-		} else {
-			stones = newStones
-		}
+	if err != nil {
+		panic(err)
 	}
 
-	fmt.Println(len(stones))
+	r, err := blink(stones, 75)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(r)
 }
 
 func readInput() (string, error) {
@@ -46,16 +48,38 @@ func parseInput(input string) ([]stone, error) {
 	return r, nil
 }
 
-func blink(stones []stone) ([]stone, error) {
-	newStones := []stone{}
-	for _, stone := range stones {
-		if _newStones, err := getNewStones(stone); err != nil {
-			return nil, err
+var blinkCache = map[string]int{}
+
+func blink(stones []stone, i int) (int, error) {
+	key := getBlinkCacheKey(stones, i)
+
+	if i == 0 {
+		blinkCache[key] = len(stones)
+		return len(stones), nil
+	}
+
+	if c, ok := blinkCache[key]; ok {
+		return c, nil
+	}
+
+	r := 0
+	for _, s := range stones {
+		if _newStones, err := getNewStones(s); err != nil {
+			return 0, err
 		} else {
-			newStones = append(newStones, _newStones...)
+			if r_, err := blink(_newStones, i-1); err != nil {
+				return 0, err
+			} else {
+				r += r_
+			}
 		}
 	}
-	return newStones, nil
+	blinkCache[key] = r
+	return r, nil
+}
+
+func getBlinkCacheKey(stones []stone, remaining int) string {
+	return fmt.Sprint(stones) + strconv.Itoa(remaining)
 }
 
 func isEven(n int) bool {
